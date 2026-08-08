@@ -85,3 +85,150 @@
 // =============================================================================
 
 
+const readlineSync = require("readline-sync");
+
+function showMenu() {
+    console.log("\n================================");
+    console.log("   STUDENT RECORD SYSTEM MENU");
+    console.log("================================");
+    console.log("1. Add student");
+    console.log("2. Display all students");
+    console.log("3. Calculate average score");
+    console.log("4. Quit");
+}
+
+function calculateAverage(scores) {
+    let total = 0;
+
+    for (let i = 0; i < scores.length; i++) {
+        total += scores[i];
+    }
+
+    return total / scores.length;
+}
+
+function findStudent(students, studentId) {
+    for (let i = 0; i < students.length; i++) {
+        if (students[i].id === studentId) {
+            return students[i];
+        }
+    }
+
+    return null;
+}
+
+function addStudent(students) {
+    const name = readlineSync.question("Student name: ").trim();
+
+    if (name === "") {
+        console.log("Error: Name cannot be empty.");
+        return;
+    }
+
+    const id = readlineSync.questionInt("Student ID: ");
+
+    if (findStudent(students, id) !== null) {
+        console.log("Error: A student with that ID already exists.");
+        return;
+    }
+
+    const scoreCount = readlineSync.questionInt("How many scores? ");
+
+    if (scoreCount <= 0) {
+        console.log("Error: The number of scores must be positive.");
+        return;
+    }
+
+    const scores = [];
+
+    for (let i = 0; i < scoreCount; i++) {
+        const score = readlineSync.questionFloat(`Enter score ${i + 1}: `);
+        scores.push(score);
+    }
+
+    const student = {
+        name: name,
+        id: id,
+        scores: scores
+    };
+
+    students.push(student);
+    console.log(`Student "${name}" added successfully.`);
+}
+
+function displayAllStudents(students) {
+    if (students.length === 0) {
+        console.log("No student records have been added yet.");
+        return;
+    }
+
+    console.log("\n--------------------------------------------------------------------");
+    console.log(
+        "Name".padEnd(20) +
+        "ID".padEnd(12) +
+        "Scores".padEnd(28) +
+        "Average"
+    );
+    console.log("--------------------------------------------------------------------");
+
+    for (let i = 0; i < students.length; i++) {
+        const student = students[i];
+        let scoresText = "";
+
+        for (let j = 0; j < student.scores.length; j++) {
+            scoresText += student.scores[j];
+
+            if (j < student.scores.length - 1) {
+                scoresText += ", ";
+            }
+        }
+
+        const average = calculateAverage(student.scores);
+
+        console.log(
+            student.name.padEnd(20) +
+            String(student.id).padEnd(12) +
+            scoresText.padEnd(28) +
+            average.toFixed(2)
+        );
+    }
+
+    console.log("--------------------------------------------------------------------");
+}
+
+function showStudentAverage(students) {
+    const id = readlineSync.questionInt("Enter student ID: ");
+    const student = findStudent(students, id);
+
+    if (student === null) {
+        console.log("Error: Student ID not found.");
+    } else {
+        const average = calculateAverage(student.scores);
+        console.log(`${student.name}'s average score: ${average.toFixed(2)}`);
+    }
+}
+
+function main() {
+    const students = [];
+    let running = true;
+
+    while (running) {
+        showMenu();
+        const choice = readlineSync.question("Enter your choice (1-4): ");
+
+        if (choice === "1") {
+            addStudent(students);
+        } else if (choice === "2") {
+            displayAllStudents(students);
+        } else if (choice === "3") {
+            showStudentAverage(students);
+        } else if (choice === "4") {
+            console.log("Goodbye!");
+            running = false;
+        } else {
+            console.log("Invalid choice. Please enter a number from 1 to 4.");
+        }
+    }
+}
+
+main();

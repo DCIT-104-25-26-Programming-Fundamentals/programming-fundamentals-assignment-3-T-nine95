@@ -75,3 +75,103 @@
 // =============================================================================
 
 
+const readlineSync = require("readline-sync");
+
+function showMenu() {
+    console.log("\n============================");
+    console.log("     SIMPLE CALCULATOR");
+    console.log("============================");
+    console.log("1. Addition");
+    console.log("2. Subtraction");
+    console.log("3. Multiplication");
+    console.log("4. Division");
+    console.log("5. Modulus");
+    console.log("6. Exponentiation");
+    console.log("7. Quit");
+}
+
+function add(first, second) {
+    return first + second;
+}
+
+function subtract(first, second) {
+    return first - second;
+}
+
+function multiply(first, second) {
+    return first * second;
+}
+
+function divide(first, second) {
+    return first / second;
+}
+
+function modulus(first, second) {
+    return first % second;
+}
+
+function exponentiate(first, second) {
+    return first ** second;
+}
+
+function main() {
+    let running = true;
+
+    while (running) {
+        showMenu();
+        const choice = readlineSync.question("Select an operation (1-7): ");
+
+        if (choice === "7") {
+            console.log("Goodbye!");
+            running = false;
+        } else if (
+            choice !== "1" &&
+            choice !== "2" &&
+            choice !== "3" &&
+            choice !== "4" &&
+            choice !== "5" &&
+            choice !== "6"
+        ) {
+            console.log("Invalid choice. Please select a number from 1 to 7.");
+        } else {
+            const first = readlineSync.questionFloat("Enter first number : ");
+            const second = readlineSync.questionFloat("Enter second number: ");
+
+            if (choice === "1") {
+                console.log(
+                    `Result: ${first} + ${second} = ${add(first, second).toFixed(2)}`
+                );
+            } else if (choice === "2") {
+                console.log(
+                    `Result: ${first} - ${second} = ${subtract(first, second).toFixed(2)}`
+                );
+            } else if (choice === "3") {
+                console.log(
+                    `Result: ${first} * ${second} = ${multiply(first, second).toFixed(2)}`
+                );
+            } else if (choice === "4") {
+                if (second === 0) {
+                    console.log("Error: Cannot divide by zero.");
+                } else {
+                    console.log(
+                        `Result: ${first} / ${second} = ${divide(first, second).toFixed(2)}`
+                    );
+                }
+            } else if (choice === "5") {
+                if (second === 0) {
+                    console.log("Error: Cannot perform modulus with zero.");
+                } else {
+                    console.log(
+                        `Result: ${first} % ${second} = ${modulus(first, second).toFixed(2)}`
+                    );
+                }
+            } else if (choice === "6") {
+                console.log(
+                    `Result: ${first} ** ${second} = ${exponentiate(first, second).toFixed(2)}`
+                );
+            }
+        }
+    }
+}
+
+main();
